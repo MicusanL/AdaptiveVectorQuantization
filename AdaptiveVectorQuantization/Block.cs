@@ -72,6 +72,11 @@ namespace AdaptiveVectorQuantization
                 return false;
             }
 
+            if (Position.X + Width >= AVQ.originalImage.Width || Position.Y + Height >= AVQ.originalImage.Height)
+            {
+                return false;
+            }
+
             for (int i = 0; i < Width; i++)
             {
                 for (int j = 0; j < Height; j++)
