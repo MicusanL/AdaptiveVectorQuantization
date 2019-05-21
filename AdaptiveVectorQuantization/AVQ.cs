@@ -8,22 +8,15 @@ using System.Collections;
 
 namespace AdaptiveVectorQuantization
 {
-
-
-
-
-    //class Dictionary
-    //{
-    //    int index;
-    //    Block block;
-    //}
-
-
+    
     class AVQ
     {
+        private const int emptyPixel = 255;
+
         public static FastImage originalImage;
         public static FastImage workImage;
 
+        private bool[,] imageBitmap;
 
         public static bool ComparePx(int x1, int y1, int x2, int y2)
         {
@@ -59,7 +52,6 @@ namespace AdaptiveVectorQuantization
 
             if (dictionary.TryGetValue(tempBlock, out int index)) /* see override Equals from Block */
             {
-                //Console.WriteLine(index);
                 return index;
             }
             else
@@ -71,9 +63,10 @@ namespace AdaptiveVectorQuantization
         public AVQ(string sSourceFileName)
         {
 
-            Bitmap imageBitmap = new Bitmap(sSourceFileName);
 
-            originalImage = new FastImage(imageBitmap);
+            originalImage = new FastImage(new Bitmap(sSourceFileName));
+
+            imageBitmap = new bool[originalImage.Width, originalImage.Height];
 
             Bitmap blackImageBitmap = new Bitmap(sSourceFileName);
             workImage = newBlackImage(blackImageBitmap);
@@ -95,7 +88,7 @@ namespace AdaptiveVectorQuantization
             {
                 for (int j = 0; j < newImg.Height; j++)
                 {
-                    newImg.SetPixel(i, j, 255);
+                    newImg.SetPixel(i, j, emptyPixel);
                 }
             }
             newImg.Unlock();
@@ -138,20 +131,44 @@ namespace AdaptiveVectorQuantization
             }
         }
 
+        private void addGrowingPoint(Position growingPoint)
+        {
+            if (growingPoint.X >= workImage.Width || growingPoint.Y >= workImage.Height)
+            {
+                return;
+            }
+
+            if (imageBitmap[growingPoint.X, growingPoint.Y] == true)
+            {
+                return;
+            }
+
+            if (growingPoint.X <= 1 || growingPoint.Y <= 1)
+            {
+                goto addGP;
+            }
+
+            if (imageBitmap[growingPoint.X - 1, growingPoint.Y - 1] == false && imageBitmap[growingPoint.X, growingPoint.Y - 1] == false && imageBitmap[growingPoint.X - 1, growingPoint.Y] == false)
+            {
+                return;
+            }
+
+
+
+            addGP: poolGrowingPoints.Push(growingPoint);
+        }
+
         public FastImage TestDictionar()
         {
-            // Color color;
-            int debugX = 0, debugY = 0;
-
             originalImage.Lock();
             testBuildImageMatrix();
 
             workImage.Lock();
             while (poolGrowingPoints.Count != 0)
             {
-                Position currentPosition = poolGrowingPoints.Pop();
-                int i = currentPosition.X;
-                int j = currentPosition.Y;
+                Position growingPoint = poolGrowingPoints.Pop();
+                int i = growingPoint.X;
+                int j = growingPoint.Y;
                 int index;
 
                 if (i == 0 || j == 0)
@@ -160,11 +177,11 @@ namespace AdaptiveVectorQuantization
                 }
                 else
                 {
-                    index = SearchBlock(currentPosition);
+                    index = SearchBlock(growingPoint);
                     if (index < 256)
                     {
-                        currentPosition.X--;
-                        Block newBlock = new Block(currentPosition, 2, 1);
+                        growingPoint.X--;
+                        Block newBlock = new Block(growingPoint, 2, 1);
                         if (dictionary.ContainsKey(newBlock) == false)
                         {
                             updateDictionay(newBlock);
@@ -173,7 +190,7 @@ namespace AdaptiveVectorQuantization
                     else
                     {
                         Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
-                        Block newBlock = findedBlock.setupNewBlockForDictionary(currentPosition);
+                        Block newBlock = findedBlock.setupNewBlockForDictionary(growingPoint);
 
                         if (dictionary.ContainsKey(newBlock) == false)
                         {
@@ -186,18 +203,10 @@ namespace AdaptiveVectorQuantization
                 if (index < 256)
                 {
                     workImage.SetPixel(i, j, index);
-                    //if(new j< maxJ)
-                    Position newGrowingPoint1 = new Position(i, j + 1);
-                    if (newGrowingPoint1.Y < originalImage.Height && ((newGrowingPoint1.X - 1 >= 0) ? (workImage.GetPixel(newGrowingPoint1.X - 1, newGrowingPoint1.Y) != 255) : true))
-                    {
-                        poolGrowingPoints.Push(newGrowingPoint1);
-                    }
+                    imageBitmap[i, j] = true;
 
-                    Position newGrowingPoint2 = new Position(i + 1, j);
-                    if (newGrowingPoint2.X < originalImage.Width && ((newGrowingPoint2.Y - 1 >= 0) ? (workImage.GetPixel(newGrowingPoint2.X, newGrowingPoint2.Y - 1) != 255) : true))
-                    {
-                        poolGrowingPoints.Push(newGrowingPoint2);
-                    }
+                    addGrowingPoint(new Position(i, j + 1));
+                    addGrowingPoint(new Position(i + 1, j));
                 }
                 else
                 {
@@ -211,111 +220,23 @@ namespace AdaptiveVectorQuantization
                         for (int l = 0; l < findedBlock.Height; l++)
                         {
                             int color = originalImage.GetPixel(findedBlock.Position.X + k, findedBlock.Position.Y + l);
-                            if (color == 255)
+                            if (color == emptyPixel)
                             {
 
                             }
                             workImage.SetPixel(i + k, j + l, color);
-                            //debugX = i + k;
-                            //debugY = j + l;
+                            imageBitmap[i + k, j + l] = true;
+
                         }
                     }
 
-                    Position newGrowingPoint1 = new Position(i, j + findedBlock.Height);
-                    if (newGrowingPoint1.Y < originalImage.Height && ((newGrowingPoint1.X - 1 >= 0) ? (workImage.GetPixel(newGrowingPoint1.X - 1, newGrowingPoint1.Y) != 255) : true))
-                    {
-                        poolGrowingPoints.Push(newGrowingPoint1);
-                    }
+                    addGrowingPoint(new Position(i, j + findedBlock.Height));
+                    addGrowingPoint(new Position(i + findedBlock.Width, j));
 
-                    Position newGrowingPoint2 = new Position(i + findedBlock.Width, j);
-                    if (newGrowingPoint2.X < originalImage.Width && ((newGrowingPoint2.Y - 1 >= 0) ? (workImage.GetPixel(newGrowingPoint2.X, newGrowingPoint2.Y - 1) != 255) : true))
-                    {
-                        poolGrowingPoints.Push(newGrowingPoint2);
-                    }
-
-
-                    //if (debugX != i || debugY != j)
-                    //{
-
-                    //}
                 }
             }
 
-            //for (int i = 0; i < originalImage.Width; i++)
-            //{
-            //    for (int j = 0; j < originalImage.Height; j++)
-            //    {
-            //        if (debugX + 1 != i || debugY + 1 != j)
-            //        {
 
-            //        }
-            //        int index;
-            //        Position tempPosition = new Position(i, j);
-
-            //        if (i == 0 || j == 0)
-            //        {
-            //            index = originalImage.GetPixel(i, j);
-            //        }
-            //        else
-            //        {
-            //            index = SearchBlock(tempPosition);
-            //            if (index < 256)
-            //            {
-            //                tempPosition.X--;
-            //                Block newBlock = new Block(tempPosition, 2, 1);
-            //                if (dictionary.ContainsKey(newBlock) == false)
-            //                {
-            //                    updateDictionay(newBlock);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
-            //                Block newBlock = findedBlock.setupNewBlockForDictionary(tempPosition);
-
-            //                if (dictionary.ContainsKey(newBlock) == false)
-            //                {
-            //                    updateDictionay(newBlock);
-            //                }
-
-            //            }
-            //        }
-
-            //        if (index < 256)
-            //        {
-            //            workImage.SetPixel(i, j, index);
-            //        }
-            //        else
-            //        {
-            //            if (index > dictionary.Count + 255)
-            //            {
-
-            //            }
-            //            Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
-            //            for (int k = 0; k < findedBlock.Width; k++)
-            //            {
-            //                for (int l = 0; l < findedBlock.Height; l++)
-            //                {
-            //                    int color = originalImage.GetPixel(findedBlock.Position.X + k, findedBlock.Position.Y + l);
-            //                    if (color == 255)
-            //                    {
-
-            //                    }
-            //                    workImage.SetPixel(i + k, j + l, color);
-            //                    debugX = i + k;
-            //                    debugY = j + l;
-            //                }
-            //            }
-
-
-            //            if (debugX != i || debugY != j)
-            //            {
-
-            //            }
-            //        }
-
-            //    }
-            //}
 
             workImage.Unlock();
             originalImage.Unlock();
