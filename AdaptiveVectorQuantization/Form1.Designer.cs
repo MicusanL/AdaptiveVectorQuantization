@@ -28,11 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelOriginalImage = new System.Windows.Forms.Panel();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.panelDestination = new System.Windows.Forms.Panel();
             this.buttonStart = new System.Windows.Forms.Button();
+            this.textBoxThreshold = new System.Windows.Forms.TextBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.labelThreshold = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // panelOriginalImage
@@ -75,11 +79,35 @@
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
+            // textBoxThreshold
+            // 
+            this.textBoxThreshold.Location = new System.Drawing.Point(119, 482);
+            this.textBoxThreshold.Name = "textBoxThreshold";
+            this.textBoxThreshold.Size = new System.Drawing.Size(100, 22);
+            this.textBoxThreshold.TabIndex = 3;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // labelThreshold
+            // 
+            this.labelThreshold.AutoSize = true;
+            this.labelThreshold.Location = new System.Drawing.Point(41, 485);
+            this.labelThreshold.Name = "labelThreshold";
+            this.labelThreshold.Size = new System.Drawing.Size(72, 17);
+            this.labelThreshold.TabIndex = 5;
+            this.labelThreshold.Text = "Threshold";
+            // 
             // FormAVQ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1249, 669);
+            this.Controls.Add(this.labelThreshold);
+            this.Controls.Add(this.textBoxThreshold);
             this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.panelDestination);
             this.Controls.Add(this.buttonLoad);
@@ -87,6 +115,7 @@
             this.Name = "FormAVQ";
             this.Text = "Image compression";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -97,6 +126,9 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Panel panelDestination;
         private System.Windows.Forms.Button buttonStart;
+        private System.Windows.Forms.TextBox textBoxThreshold;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.Label labelThreshold;
     }
 }
 

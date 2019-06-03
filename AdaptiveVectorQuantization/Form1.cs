@@ -8,15 +8,13 @@ namespace AdaptiveVectorQuantization
     {
 
         private FastImage originalImage;
-        
-        private AVQ avqCompression = null;
 
         public FormAVQ()
         {
             InitializeComponent();
         }
 
-        internal AVQ AvqCompression { get => avqCompression; set => avqCompression = value; }
+        internal AVQ AvqCompression { get; set; } = null;
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
@@ -24,15 +22,29 @@ namespace AdaptiveVectorQuantization
             string sSourceFileName = openFileDialog.FileName;
             panelOriginalImage.BackgroundImage = new Bitmap(sSourceFileName);
             
-            avqCompression = new AVQ(sSourceFileName);
+            AvqCompression = new AVQ(sSourceFileName);
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            if (AvqCompression != null)
+            {
+                if (int.TryParse(textBoxThreshold.Text, out int threshold))
+                {
+                    originalImage = AvqCompression.TestDictionar(threshold);
+                }
+                else
+                {
+                    originalImage = AvqCompression.TestDictionar(0);
+                }
 
-            originalImage = avqCompression.TestDictionar();
-            panelDestination.BackgroundImage = null;
-            panelDestination.BackgroundImage = originalImage.GetBitMap();
+                panelDestination.BackgroundImage = null;
+                panelDestination.BackgroundImage = originalImage.GetBitMap();
+            }
+            else
+            {
+                MessageBox.Show("You need to choose an image!");
+            }
         }
     }
 }

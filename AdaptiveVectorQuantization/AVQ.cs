@@ -15,9 +15,7 @@ namespace AdaptiveVectorQuantization
 
         public static FastImage originalImage;
         public static FastImage workImage;
-        public static int threshold = 10;
-
-      private bool[,] imageBitmap;
+        private bool[,] imageBitmap;
 
         public static int CompareBlocks(Block b1, Block b2)
         {
@@ -27,8 +25,8 @@ namespace AdaptiveVectorQuantization
             {
                 for (int j = 0; j < b1.Height; j++)
                 {
-                    int px1 = originalImage.GetPixel(b1.Position.X + i, b1.Position.Y + j);
-                    int px2 = originalImage.GetPixel(b2.Position.X + i, b2.Position.Y + j);
+                    int px1 = workImage.GetPixel(b1.Position.X + i, b1.Position.Y + j);
+                    int px2 = workImage.GetPixel(b2.Position.X + i, b2.Position.Y + j);
                     differences += Math.Abs(px1 - px2);
                 }
             }
@@ -62,9 +60,12 @@ namespace AdaptiveVectorQuantization
         //private ArrayList poolGrowingPoints;
         private Stack<Position> poolGrowingPoints = new Stack<Position>();
         private Dictionary<Block, int> dictionary;
-        private const int maxDictionaryLength = 1000;
+        private const int maxDictionaryLength = 700;
         private int currentDictionaryLength; /* currentDictionaryLength = [256; maxDictionaryLength] */
         int numberBlocksFinded = 0;
+
+        public static int Threshold { get; set; }
+
         private int SearchBlock(Position position)
         {
             Block tempBlock = new Block(position);
@@ -194,8 +195,10 @@ namespace AdaptiveVectorQuantization
             }
         }
 
-        public FastImage TestDictionar()
+        public FastImage TestDictionar(int th)
         {
+            Threshold = th;
+              
             originalImage.Lock();
             //testBuildImageMatrix();
 
@@ -230,7 +233,6 @@ namespace AdaptiveVectorQuantization
 
                         Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
 
-
                         Block newBlock = findedBlock.setupNewBlockForDictionary(growingPoint);
 
                         if (dictionary.ContainsKey(newBlock) == false)
@@ -257,7 +259,7 @@ namespace AdaptiveVectorQuantization
                     {
                         for (int l = 0; l < findedBlock.Height; l++)
                         {
-                            int color = originalImage.GetPixel(findedBlock.Position.X + k, findedBlock.Position.Y + l);
+                            int color = workImage.GetPixel(findedBlock.Position.X + k, findedBlock.Position.Y + l);
 
                             workImage.SetPixel(i + k, j + l, color);
                             imageBitmap[i + k, j + l] = true;

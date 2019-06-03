@@ -67,18 +67,18 @@ namespace AdaptiveVectorQuantization
             var block = obj as Block;
             //block.height = height;
             //block.width = width;
-            if (block.Position.X + Width >= AVQ.originalImage.Width || block.Position.Y + Height >= AVQ.originalImage.Height)
+            if (block.Position.X + Width >= AVQ.workImage.Width || block.Position.Y + Height >= AVQ.workImage.Height)
             {
                 return false;
             }
 
-            if (Position.X + Width >= AVQ.originalImage.Width || Position.Y + Height >= AVQ.originalImage.Height)
+            if (Position.X + Width >= AVQ.workImage.Width || Position.Y + Height >= AVQ.workImage.Height)
             {
                 return false;
             }
 
             int blocksDiffedences = AVQ.CompareBlocks(this, block);
-            if(blocksDiffedences > AVQ.threshold)
+            if(blocksDiffedences > AVQ.Threshold)
             {
                 goto label;
             }
@@ -94,6 +94,8 @@ namespace AdaptiveVectorQuantization
             //    }
             //}
 
+
+           // Console.WriteLine(Index + " " + block.Index + " --");
             if(block.Height == 0 && block.Width == 0)
             {
                 return true;
