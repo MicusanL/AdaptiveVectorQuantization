@@ -15,10 +15,27 @@ namespace AdaptiveVectorQuantization
 
         public static FastImage originalImage;
         public static FastImage workImage;
+        public static int threshold = 10;
 
-        private bool[,] imageBitmap;
+      private bool[,] imageBitmap;
 
+        public static int CompareBlocks(Block b1, Block b2)
+        {
+            int differences = 0;
 
+            for (int i = 0; i < b1.Width; i++)
+            {
+                for (int j = 0; j < b1.Height; j++)
+                {
+                    int px1 = originalImage.GetPixel(b1.Position.X + i, b1.Position.Y + j);
+                    int px2 = originalImage.GetPixel(b2.Position.X + i, b2.Position.Y + j);
+                    differences += Math.Abs(px1 - px2);
+                }
+            }
+
+            return differences;
+
+        }
         public static bool ComparePx(int x1, int y1, int x2, int y2)
         {
 
@@ -247,9 +264,9 @@ namespace AdaptiveVectorQuantization
 
                         }
                     }
-
+                    
                     numberBlocksFinded++;
-                    drawBlockBorder(i, j, findedBlock);
+                    //drawBlockBorder(i, j, findedBlock);
 
                     addGrowingPoint(new Position(i, j + findedBlock.Height));
                     addGrowingPoint(new Position(i + findedBlock.Width, j));

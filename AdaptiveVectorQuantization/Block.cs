@@ -77,16 +77,22 @@ namespace AdaptiveVectorQuantization
                 return false;
             }
 
-            for (int i = 0; i < Width; i++)
+            int blocksDiffedences = AVQ.CompareBlocks(this, block);
+            if(blocksDiffedences > AVQ.threshold)
             {
-                for (int j = 0; j < Height; j++)
-                {
-                    if (AVQ.ComparePx(Position.X + i, Position.Y + j, block.Position.X + i, block.Position.Y + j) == false) /* De facut clasa image? */
-                    {
-                        goto label;
-                    }
-                }
+                goto label;
             }
+
+            //for (int i = 0; i < Width; i++)
+            //{
+            //    for (int j = 0; j < Height; j++)
+            //    {
+            //        if (AVQ.ComparePx(Position.X + i, Position.Y + j, block.Position.X + i, block.Position.Y + j) == false) /* De facut clasa image? */
+            //        {
+            //            goto label;
+            //        }
+            //    }
+            //}
 
             if(block.Height == 0 && block.Width == 0)
             {
