@@ -209,7 +209,7 @@ namespace AdaptiveVectorQuantization
                     else
                     {
                        
-                        //dictionary = dictionary.OrderBy(key => key.Key.Size).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+                        dictionary = dictionary.OrderBy(key => key.Key.Size).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
 
                         Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
 
