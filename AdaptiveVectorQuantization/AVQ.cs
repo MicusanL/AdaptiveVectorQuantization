@@ -10,7 +10,7 @@ namespace AdaptiveVectorQuantization
 {
 
     class AVQ
-    {
+    {//test
         private const int emptyPixel = 255;
 
         public static FastImage originalImage;
