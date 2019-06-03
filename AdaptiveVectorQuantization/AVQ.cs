@@ -18,6 +18,7 @@ namespace AdaptiveVectorQuantization
 
         private bool[,] imageBitmap;
 
+
         public static bool ComparePx(int x1, int y1, int x2, int y2)
         {
 
@@ -105,6 +106,7 @@ namespace AdaptiveVectorQuantization
                 try
                 {
                     block.Index = currentDictionaryLength;
+
                     dictionary.Add(block, currentDictionaryLength++);
                 }
                 catch (ArgumentException ex)
@@ -163,17 +165,6 @@ namespace AdaptiveVectorQuantization
 
         private void drawBlockBorder(int i, int j, Block block)
         {
-            //for (int k = 0; k < findedBlock.Width; k++)
-            //{
-            //    workImage.SetPixel(i + k, j, 255);
-            //    workImage.SetPixel(i + k, j + findedBlock.Height - 1, 255);
-            //}
-            //for (int l = 0; l < findedBlock.Height; l++)
-            //{
-            //    workImage.SetPixel(i, j + l, 255);
-            //    workImage.SetPixel(i + findedBlock.Width - 1, j + l, 255);
-            //}
-
             for (int k = 0; k < block.Width; k++)
             {
                 workImage.SetPixel(i + k, j, 255);
@@ -217,7 +208,12 @@ namespace AdaptiveVectorQuantization
                     }
                     else
                     {
+                       
+                        //dictionary = dictionary.OrderBy(key => key.Key.Size).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+
                         Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
+
+
                         Block newBlock = findedBlock.setupNewBlockForDictionary(growingPoint);
 
                         if (dictionary.ContainsKey(newBlock) == false)
@@ -253,7 +249,7 @@ namespace AdaptiveVectorQuantization
                     }
 
                     numberBlocksFinded++;
-                   // drawBlockBorder(i, j, findedBlock);
+                    drawBlockBorder(i, j, findedBlock);
 
                     addGrowingPoint(new Position(i, j + findedBlock.Height));
                     addGrowingPoint(new Position(i + findedBlock.Width, j));

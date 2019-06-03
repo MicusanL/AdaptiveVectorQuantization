@@ -10,17 +10,11 @@ namespace AdaptiveVectorQuantization
 
     internal class Block
     {
-        int index;
-
-        Position position;
-
-        int height;
-        int width;
-
-        public int Height { get => height; set => height = value; }
-        public int Width { get => width; set => width = value; }
-        internal Position Position { get => position; set => position = value; }
-        public int Index { get => index; set => index = value; }
+        public int Height { get; set; }
+        public int Width { get; set; }
+        internal Position Position { get; set; }
+        public int Index { get; set; }
+        public int Size { get; set; }
 
         public Block setupNewBlockForDictionary(Position currentBlockPosition)
         {
@@ -53,15 +47,21 @@ namespace AdaptiveVectorQuantization
             Position = block.Position;
             Height = block.Height;
             Width = block.Width;
+            Size = Width * Height;
         }
 
         public Block(Position position, int height, int width)
         {
-            this.Position = position;
-            this.Height = height;
-            this.Width = width;
+            Position = position;
+            Height = height;
+            Width = width;
+            Size = Width * Height;
         }
-
+        public override string ToString()
+        {
+            //return base.ToString();
+            return "w: " + Width + " h: " + Height + " s: " + Size + " x: " + Position.X + " y: " + Position.Y;
+        }
         public override bool Equals(Object obj)
         {
             var block = obj as Block;
@@ -88,18 +88,24 @@ namespace AdaptiveVectorQuantization
                 }
             }
 
-            //if (Width == block.Width && Height == block.height)
-            //{
-            //    return true;
-            //}
-            return true;
+            if(block.Height == 0 && block.Width == 0)
+            {
+                return true;
+            }
+
+            if (Width == block.Width && Height == block.Height)
+            {
+                return true;
+            }
+          
+
             label: return false;
         }
 
 
         public override int GetHashCode()
         {
-            return AVQ.getPx(position);
+            return AVQ.getPx(Position);
 
         }
 
