@@ -37,6 +37,9 @@
             this.textBoxThreshold = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.labelThreshold = new System.Windows.Forms.Label();
+            this.checkBoxDrawBorder = new System.Windows.Forms.CheckBox();
+            this.labelDictionarySize = new System.Windows.Forms.Label();
+            this.textBoxDictionarySize = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // panelOriginalImage
@@ -81,7 +84,7 @@
             // 
             // textBoxThreshold
             // 
-            this.textBoxThreshold.Location = new System.Drawing.Point(119, 482);
+            this.textBoxThreshold.Location = new System.Drawing.Point(162, 482);
             this.textBoxThreshold.Name = "textBoxThreshold";
             this.textBoxThreshold.Size = new System.Drawing.Size(100, 22);
             this.textBoxThreshold.TabIndex = 3;
@@ -95,17 +98,47 @@
             // labelThreshold
             // 
             this.labelThreshold.AutoSize = true;
-            this.labelThreshold.Location = new System.Drawing.Point(41, 485);
+            this.labelThreshold.Location = new System.Drawing.Point(12, 485);
             this.labelThreshold.Name = "labelThreshold";
             this.labelThreshold.Size = new System.Drawing.Size(72, 17);
             this.labelThreshold.TabIndex = 5;
             this.labelThreshold.Text = "Threshold";
+            // 
+            // checkBoxDrawBorder
+            // 
+            this.checkBoxDrawBorder.AutoSize = true;
+            this.checkBoxDrawBorder.Location = new System.Drawing.Point(397, 518);
+            this.checkBoxDrawBorder.Name = "checkBoxDrawBorder";
+            this.checkBoxDrawBorder.Size = new System.Drawing.Size(105, 21);
+            this.checkBoxDrawBorder.TabIndex = 6;
+            this.checkBoxDrawBorder.Text = "DrawBorder";
+            this.checkBoxDrawBorder.UseVisualStyleBackColor = true;
+            // 
+            // labelDictionarySize
+            // 
+            this.labelDictionarySize.AutoSize = true;
+            this.labelDictionarySize.Location = new System.Drawing.Point(12, 518);
+            this.labelDictionarySize.Name = "labelDictionarySize";
+            this.labelDictionarySize.Size = new System.Drawing.Size(100, 17);
+            this.labelDictionarySize.TabIndex = 8;
+            this.labelDictionarySize.Text = "Dictionary size";
+            // 
+            // textBoxDictionarySize
+            // 
+            this.textBoxDictionarySize.Location = new System.Drawing.Point(162, 515);
+            this.textBoxDictionarySize.Name = "textBoxDictionarySize";
+            this.textBoxDictionarySize.Size = new System.Drawing.Size(100, 22);
+            this.textBoxDictionarySize.TabIndex = 7;
+            this.textBoxDictionarySize.Text = "1000";
             // 
             // FormAVQ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1249, 669);
+            this.Controls.Add(this.labelDictionarySize);
+            this.Controls.Add(this.textBoxDictionarySize);
+            this.Controls.Add(this.checkBoxDrawBorder);
             this.Controls.Add(this.labelThreshold);
             this.Controls.Add(this.textBoxThreshold);
             this.Controls.Add(this.buttonStart);
@@ -129,6 +162,9 @@
         private System.Windows.Forms.TextBox textBoxThreshold;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.Label labelThreshold;
+        private System.Windows.Forms.CheckBox checkBoxDrawBorder;
+        private System.Windows.Forms.Label labelDictionarySize;
+        private System.Windows.Forms.TextBox textBoxDictionarySize;
     }
 }
 

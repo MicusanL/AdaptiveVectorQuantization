@@ -14,30 +14,33 @@ namespace AdaptiveVectorQuantization
             InitializeComponent();
         }
 
+        public string SSourceFileName { get; set; }
         internal AVQ AvqCompression { get; set; } = null;
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
             openFileDialog.ShowDialog();
-            string sSourceFileName = openFileDialog.FileName;
-            panelOriginalImage.BackgroundImage = new Bitmap(sSourceFileName);
+            SSourceFileName = openFileDialog.FileName;
+            panelOriginalImage.BackgroundImage = new Bitmap(SSourceFileName);
             
-            AvqCompression = new AVQ(sSourceFileName);
+            
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            if (AvqCompression != null)
-            {
-                if (int.TryParse(textBoxThreshold.Text, out int threshold))
-                {
-                    originalImage = AvqCompression.TestDictionar(threshold);
-                }
-                else
-                {
-                    originalImage = AvqCompression.TestDictionar(0);
-                }
+            buttonStart.Enabled = false;
+            buttonLoad.Enabled = false;
 
+            if (SSourceFileName != null)
+            {
+                AvqCompression = new AVQ(SSourceFileName);
+                bool drawBorder = checkBoxDrawBorder.Checked;
+                int.TryParse(textBoxThreshold.Text, out int threshold);
+                int.TryParse(textBoxDictionarySize.Text, out int dictionarySize);
+               
+             
+
+                originalImage = AvqCompression.TestDictionar(threshold, dictionarySize, drawBorder);
                 panelDestination.BackgroundImage = null;
                 panelDestination.BackgroundImage = originalImage.GetBitMap();
             }
@@ -45,6 +48,10 @@ namespace AdaptiveVectorQuantization
             {
                 MessageBox.Show("You need to choose an image!");
             }
+
+
+            buttonStart.Enabled = true;
+            buttonLoad.Enabled = true;
         }
     }
 }

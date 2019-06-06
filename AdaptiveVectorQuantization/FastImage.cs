@@ -44,6 +44,7 @@ namespace AdaptiveVectorQuantization
 
         public int GetPixel(int col, int row)
         {
+           
             unsafe
             {
                 PixelData* pBase = (PixelData*)bitmapData.Scan0;

@@ -18,7 +18,6 @@ D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization-master\AdaptiveVectorQuantiza
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization-master\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.exe
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization-master\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.pdb
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization-master\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache
-D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.FormAVQ.resources
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.Properties.Resources.resources
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csproj.GenerateResource.cache
@@ -28,3 +27,4 @@ D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\ob
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\bin\Debug\AdaptiveVectorQuantization.exe.config
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\bin\Debug\AdaptiveVectorQuantization.exe
 D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\bin\Debug\AdaptiveVectorQuantization.pdb
+D:\LidiaMicusan\Licenta\AdaptiveVectorQuantization\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache

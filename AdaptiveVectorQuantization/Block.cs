@@ -50,7 +50,7 @@ namespace AdaptiveVectorQuantization
             Size = Width * Height;
         }
 
-        public Block(Position position, int height, int width)
+        public Block(Position position, int width, int height)
         {
             Position = position;
             Height = height;
@@ -95,7 +95,10 @@ namespace AdaptiveVectorQuantization
             //}
 
 
-           // Console.WriteLine(Index + " " + block.Index + " --");
+            //Console.WriteLine(Index + " " + block.Index + " --");
+            //AVQ.printBlock(this);
+            //AVQ.printBlock(block);
+
             if(block.Height == 0 && block.Width == 0)
             {
                 return true;
