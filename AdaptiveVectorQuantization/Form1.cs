@@ -21,7 +21,15 @@ namespace AdaptiveVectorQuantization
         {
             openFileDialog.ShowDialog();
             SSourceFileName = openFileDialog.FileName;
-            panelOriginalImage.BackgroundImage = new Bitmap(SSourceFileName);
+
+            try
+            {
+                panelOriginalImage.BackgroundImage = new Bitmap(SSourceFileName);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("File {0} not found", SSourceFileName);
+            }
             
             
         }
@@ -40,7 +48,7 @@ namespace AdaptiveVectorQuantization
                
              
 
-                originalImage = AvqCompression.TestDictionar(threshold, dictionarySize, drawBorder);
+                originalImage = AvqCompression.StartCompression(threshold, dictionarySize, drawBorder);
                 panelDestination.BackgroundImage = null;
                 panelDestination.BackgroundImage = originalImage.GetBitMap();
             }
