@@ -2,16 +2,21 @@
 {
     class Position
     {
-        
+        public override string ToString()
+        {
+            return X + " " + Y;
+        }
         public Position(int x, int y)
         {
             X = x;
             Y = y;
         }
 
-        public bool Equals(Position a, Position b)
+    
+        public override bool Equals(object obj)
         {
-            return a.X == b.X && a.Y == b.Y;
+            var position = obj as Position;
+            return position.X == X && position.Y == Y ;
         }
 
         public int X { get; set; }

@@ -78,12 +78,16 @@ namespace AdaptiveVectorQuantization
             }
 
             int blocksDiffedences = AVQ.CompareBlocks(this, block);
-            if (blocksDiffedences == 0)
-                goto label;
-            //if(blocksDiffedences > AVQ.Threshold)
-            //{
+
+            //if (blocksDiffedences == 0)
             //    goto label;
-            //}
+
+
+            if (blocksDiffedences > AVQ.Threshold)
+            {
+                goto label;
+            }
+
 
             //for (int i = 0; i < Width; i++)
             //{
@@ -101,7 +105,7 @@ namespace AdaptiveVectorQuantization
             //AVQ.printBlock(this);
             //AVQ.printBlock(block);
 
-            if(block.Height == 0 && block.Width == 0)
+            if (block.Height == 0 && block.Width == 0)
             {
                 return true;
             }

@@ -10,30 +10,14 @@ namespace AdaptiveVectorQuantization
     internal class AVQ
     {//test
         private const int emptyPixel = 255;
-
+        private static bool dictionaryChanged = false;
         public static FastImage originalImage;
         public static FastImage workImage;
         public static bool[,] imageBitmap;
 
+    
+
         public static int CompareBlocks(Block b1, Block b2)
-        {
-            for (int i = 0; i < b1.Width; i++)
-            {
-                for (int j = 0; j < b1.Height; j++)
-                {
-                    int px1 = originalImage.GetPixel(b1.Position.X + i, b1.Position.Y + j);
-                    int px2 = originalImage.GetPixel(b2.Position.X + i, b2.Position.Y + j);
-                    if (px1 != px2)
-                    {
-                        return 0;
-                    }
-                }
-            }
-
-            return 1;
-        }
-
-        public static int CompareBlocks2(Block b1, Block b2)
         {
             int differences = 0;
 
@@ -145,17 +129,18 @@ namespace AdaptiveVectorQuantization
 
         private void TryAddBlockToDictionary(Block block)
         {
-            for (int k = 0; k < block.Width; k++)
-            {
-                for (int l = 0; l < block.Height; l++)
-                {
-
-                    if (imageBitmap[block.Position.X + k, block.Position.Y + l] == false)
-                    {
-                        return;
-                    }
-                }
-            }
+            //for (int k = 0; k < block.Width; k++)
+            //{
+            //    for (int l = 0; l < block.Height; l++)
+            //    {
+            //        int x = block.Position.X + k;
+            //        int y = block.Position.Y + l;
+            //        if (imageBitmap[block.Position.X + k, block.Position.Y + l] == false)
+            //        {
+            //            return;
+            //        }
+            //    }
+            //}
             if (currentDictionaryLength < MaxDictionaryLength)
             {
 
@@ -164,6 +149,7 @@ namespace AdaptiveVectorQuantization
                     block.Index = currentDictionaryLength;
 
                     dictionary.Add(block, currentDictionaryLength++);
+                    dictionaryChanged = true;
                 }
                 catch (ArgumentException)
                 {
@@ -190,6 +176,11 @@ namespace AdaptiveVectorQuantization
 
         private void TryAddGrowingPoint(Position growingPoint)
         {
+            if (poolGrowingPoints.Contains(growingPoint))
+            {
+                return;
+            }
+
             if (growingPoint.X >= workImage.Width || growingPoint.Y >= workImage.Height)
             {
                 return;
@@ -205,8 +196,8 @@ namespace AdaptiveVectorQuantization
                 goto addGP;
             }
 
-            if (imageBitmap[growingPoint.X - 1, growingPoint.Y - 1] == false ||
-                imageBitmap[growingPoint.X, growingPoint.Y - 1] == false ||
+            if (imageBitmap[growingPoint.X - 1, growingPoint.Y - 1] == false &&
+                imageBitmap[growingPoint.X, growingPoint.Y - 1] == false &&
                 imageBitmap[growingPoint.X - 1, growingPoint.Y] == false)
             {
                 return;
@@ -231,12 +222,27 @@ namespace AdaptiveVectorQuantization
 
         private Position GetNextGrowingPoint()
         {
-            int indexMax = !poolGrowingPoints.Any() ? -1 :
-                    poolGrowingPoints.Select((value, index) => new { Value = value, Index = index })
-                                    .Aggregate((a, b) => (a.Value.X + a.Value.Y > b.Value.X + b.Value.Y) ? a : b)
-                                    .Index;
-            Position growingPoint = poolGrowingPoints[indexMax];
-            poolGrowingPoints.RemoveAt(indexMax);
+            //int indexMax = !poolGrowingPoints.Any() ? -1 :
+            //        poolGrowingPoints.Select((value, index) => new { Value = value, Index = index })
+            //                        .Aggregate((a, b) => (a.Value.X + a.Value.Y < b.Value.X + b.Value.Y) ? a : b)
+            //                        .Index;
+
+            //poolGrowingPoints.OrderBy(gp => (gp.X + gp.Y));
+
+            int minSum = int.MaxValue, index = 0;
+
+            for(int i = 0; i < poolGrowingPoints.Count; i++)
+            {
+                if (poolGrowingPoints[i].X + poolGrowingPoints[i].Y < minSum)
+                {
+                    minSum = poolGrowingPoints[i].X + poolGrowingPoints[i].Y;
+                    index = i;
+                }
+            }
+           
+
+            Position growingPoint = poolGrowingPoints[index];
+            poolGrowingPoints.RemoveAt(index);
             return growingPoint;
         }
 
@@ -281,7 +287,7 @@ namespace AdaptiveVectorQuantization
                     TryAddBlockToDictionary(newBlock);
                 }
 
-                /* 
+                 
                 newBlock = new Block(new Position(currentPosition.X, currentPosition.Y - 1), 1, 2);
                 if (dictionary.ContainsKey(newBlock) == false)
                 {
@@ -293,32 +299,34 @@ namespace AdaptiveVectorQuantization
                 {
                     TryAddBlockToDictionary(newBlock);
                 }
-                */
+                
             }
             else
             {
-
-                dictionary = dictionary.OrderBy(key => key.Key.Size).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
-
+                if (dictionaryChanged)
+                {
+                    dictionary = dictionary.OrderBy(key => key.Key.Size).ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+                    dictionaryChanged = false;
+                }
 
                 Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
 
 
-                //Block newBlock = new Block(new Position(currentPosition.X, currentPosition.Y - 1), findedBlock.Width, findedBlock.Height + 1);
-                //if (dictionary.ContainsKey(newBlock) == false)
-                //{
-                //    TryAddBlockToDictionary(newBlock);
-                //}
-                //newBlock = new Block(new Position(currentPosition.X - 1, currentPosition.Y), findedBlock.Width + 1, findedBlock.Height);
-                //if (dictionary.ContainsKey(newBlock) == false)
-                //{
-                //    TryAddBlockToDictionary(newBlock);
-                //}
-                //newBlock = new Block(new Position(currentPosition.X - 1, currentPosition.Y - 1), findedBlock.Width + 1, findedBlock.Height + 1);
-                //if (dictionary.ContainsKey(newBlock) == false)
-                //{
-                //    TryAddBlockToDictionary(newBlock);
-                //}
+                Block newBlock = new Block(new Position(currentPosition.X, currentPosition.Y - 1), findedBlock.Width, findedBlock.Height + 1);
+                if (dictionary.ContainsKey(newBlock) == false)
+                {
+                    TryAddBlockToDictionary(newBlock);
+                }
+                newBlock = new Block(new Position(currentPosition.X - 1, currentPosition.Y), findedBlock.Width + 1, findedBlock.Height);
+                if (dictionary.ContainsKey(newBlock) == false)
+                {
+                    TryAddBlockToDictionary(newBlock);
+                }
+                newBlock = new Block(new Position(currentPosition.X - 1, currentPosition.Y - 1), findedBlock.Width + 1, findedBlock.Height + 1);
+                if (dictionary.ContainsKey(newBlock) == false)
+                {
+                    TryAddBlockToDictionary(newBlock);
+                }
 
             }
         }
@@ -358,7 +366,7 @@ namespace AdaptiveVectorQuantization
                 {
                     workImage.SetPixel(i, j, index);
                     imageBitmap[i, j] = true;
-                    Console.WriteLine("{0} {1}", i, j);
+                    //Console.WriteLine("{0} {1}", i, j);
 
                     TryAddGrowingPoint(new Position(i, j + 1));
                     TryAddGrowingPoint(new Position(i + 1, j));
@@ -379,7 +387,7 @@ namespace AdaptiveVectorQuantization
                             }
                             workImage.SetPixel(i + k, j + l, color);
                             imageBitmap[i + k, j + l] = true;
-                            Console.WriteLine("{0} {1}", i + k, j + l);
+                            //Console.WriteLine("{0} {1}", i + k, j + l);
 
                         }
                     }
