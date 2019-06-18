@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace AdaptiveVectorQuantization
 {
     internal class AVQ
     {//test
-        private const int emptyPixel = 255;
+        private const int emptyPixel = 30;
         private static bool dictionaryChanged = false;
         public static FastImage originalImage;
         public static FastImage workImage;
@@ -111,6 +110,24 @@ namespace AdaptiveVectorQuantization
 
         }
 
+        public AVQ(string sSourceFileName, bool idc)
+        {
+            ReadFromFile(sSourceFileName);
+            //originalImage = new FastImage(new Bitmap(sSourceFileName));
+
+            //imageBitmap = new bool[originalImage.Width, originalImage.Height];
+
+            //Bitmap blackImageBitmap = new Bitmap(sSourceFileName);
+            //workImage = newBlackImage(blackImageBitmap);
+
+            //dictionary = new Dictionary<Block, int>();
+            //currentDictionaryLength = 256;
+
+            //Position firstGrowingPoint = new Position(0, 0);
+            //poolGrowingPoints.Add(firstGrowingPoint);
+
+        }
+
         private FastImage newBlackImage(Bitmap imageBitmap)
         {
             FastImage newImg = new FastImage(imageBitmap);
@@ -120,7 +137,7 @@ namespace AdaptiveVectorQuantization
             {
                 for (int j = 0; j < newImg.Height; j++)
                 {
-                    newImg.SetPixel(i, j, emptyPixel);
+                    newImg.SetPixel(i, j, random.Next(0,200));
                 }
             }
 
@@ -247,15 +264,32 @@ namespace AdaptiveVectorQuantization
             poolGrowingPoints.RemoveAt(index);
             return growingPoint;
         }
+        public static int wTest, hTest;
+        private static List<int> indexesList;
+        private static void ReadFromFile(string sSourceFileName)
+        {
+            using (BitReader reader = new BitReader(sSourceFileName))
+            {
+                int indexesNumber = (int)reader.ReadNBits(32);
+                Threshold = (int)reader.ReadNBits(32);
+                MaxDictionaryLength = (int)reader.ReadNBits(32);
+                wTest = (int)reader.ReadNBits(32);
+                hTest = (int)reader.ReadNBits(32);
 
 
+                indexesList = new List<int>();
 
+                for (int i = 0; i < indexesNumber; i++)
+                {
+
+                    int index = (int)reader.ReadNBits(32);
+                    indexesList.Add(index);
+                   // Console.WriteLine("D: " + index);
+                }
+            }
+        }
         private static void WriteInFile(List<int> indexes, bool CompressedFileFormat)
         {
-            //using (BinaryWriter writer = new BinaryWriter(File.Open("exitFile", FileMode.Create)))
-            //{
-            //    writer.Write(index);
-            //}
 
 
 
@@ -269,8 +303,13 @@ namespace AdaptiveVectorQuantization
                 using (BitWriter writer = new BitWriter(outputFile))
                 {
                     writer.WriteNBits((uint)indexes.Count, 32);
+                    writer.WriteNBits((uint)Threshold, 32);
+                    writer.WriteNBits((uint)MaxDictionaryLength, 32);
+                    writer.WriteNBits((uint)originalImage.Width, 32);
+                    writer.WriteNBits((uint)originalImage.Height, 32);
                     foreach (uint index in indexes)
                     {
+                       // Console.WriteLine("C: " + index);
                         if (index < 256)
                         {
                             writer.WriteNBits(0, 2);
@@ -296,11 +335,21 @@ namespace AdaptiveVectorQuantization
             }
             else
             {
-                using (FileStream fs = new FileStream(outputFile, FileMode.Create))
+                using (BitWriter writer = new BitWriter(outputFile))
                 {
-                    BinaryFormatter bf = new BinaryFormatter();
-                    bf.Serialize(fs, indexes);
+                    writer.WriteNBits((uint)indexes.Count, 32);
+                    writer.WriteNBits((uint)Threshold, 32);
+                    writer.WriteNBits((uint)MaxDictionaryLength, 32);
+                    writer.WriteNBits((uint)originalImage.Width, 32);
+                    writer.WriteNBits((uint)originalImage.Height, 32);
+
+                    foreach (uint index in indexes)
+                    {
+                       // Console.WriteLine("C: " + index);
+                        writer.WriteNBits(index, 32);
+                    }
                 }
+
             }
         }
 
@@ -373,10 +422,19 @@ namespace AdaptiveVectorQuantization
             }
         }
 
+        public FastImage StartDeCompression()
+        {
+            Bitmap blackImageBitmap = new Bitmap(wTest, hTest);//!!!!
+
+            workImage = newBlackImage(blackImageBitmap);
+            return workImage;
+
+
+        }
         public FastImage StartCompression(int th, int dictionarySize, bool drawBorder, bool CompressedFileFormat)
         {
             DateTime startTime = DateTime.Now;
-            List<int> indexesList = new List<int>();
+            indexesList = new List<int>();
 
             Threshold = th;
             MaxDictionaryLength = dictionarySize;

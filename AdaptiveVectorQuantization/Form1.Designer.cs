@@ -42,6 +42,7 @@
             this.textBoxDictionarySize = new System.Windows.Forms.TextBox();
             this.buttonShannon = new System.Windows.Forms.Button();
             this.checkBoxCompressedFileFormat = new System.Windows.Forms.CheckBox();
+            this.buttonDecode = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panelOriginalImage
@@ -153,11 +154,22 @@
             this.checkBoxCompressedFileFormat.Text = "CompressedFileFormat";
             this.checkBoxCompressedFileFormat.UseVisualStyleBackColor = true;
             // 
+            // buttonDecode
+            // 
+            this.buttonDecode.Location = new System.Drawing.Point(1085, 560);
+            this.buttonDecode.Name = "buttonDecode";
+            this.buttonDecode.Size = new System.Drawing.Size(127, 44);
+            this.buttonDecode.TabIndex = 11;
+            this.buttonDecode.Text = "Decode";
+            this.buttonDecode.UseVisualStyleBackColor = true;
+            this.buttonDecode.Click += new System.EventHandler(this.buttonDecode_Click);
+            // 
             // FormAVQ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1249, 669);
+            this.Controls.Add(this.buttonDecode);
             this.Controls.Add(this.checkBoxCompressedFileFormat);
             this.Controls.Add(this.buttonShannon);
             this.Controls.Add(this.labelDictionarySize);
@@ -191,6 +203,7 @@
         private System.Windows.Forms.TextBox textBoxDictionarySize;
         private System.Windows.Forms.Button buttonShannon;
         private System.Windows.Forms.CheckBox checkBoxCompressedFileFormat;
+        private System.Windows.Forms.Button buttonDecode;
     }
 }
 

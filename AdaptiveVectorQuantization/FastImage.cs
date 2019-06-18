@@ -25,8 +25,8 @@ namespace AdaptiveVectorQuantization
             image = bitmap;
             Width = image.Width;
             Height = image.Height;
-            size = new Point(image.Size);
-            currentBitmapWidth = size.X;
+            //size = new Point(image.Size);
+            currentBitmapWidth = bitmap.Width;
         }
 
         public void Lock()
