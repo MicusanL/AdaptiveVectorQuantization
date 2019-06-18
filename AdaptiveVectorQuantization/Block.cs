@@ -37,7 +37,7 @@ namespace AdaptiveVectorQuantization
 
         public Block(Position position)
         {
-            this.Position = position;
+            Position = position;
             Height = 0;
             Width = 0;
         }
@@ -62,7 +62,7 @@ namespace AdaptiveVectorQuantization
             //return base.ToString();
             return "w: " + Width + " h: " + Height + " s: " + Size + " x: " + Position.X + " y: " + Position.Y;
         }
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             var block = obj as Block;
             //block.height = height;
@@ -71,11 +71,7 @@ namespace AdaptiveVectorQuantization
             {
                 return false;
             }
-
-            if (Position.X + Width >= AVQ.workImage.Width || Position.Y + Height >= AVQ.workImage.Height)
-            {
-                return false;
-            }
+            
 
             int blocksDiffedences = AVQ.CompareBlocks(this, block);
 

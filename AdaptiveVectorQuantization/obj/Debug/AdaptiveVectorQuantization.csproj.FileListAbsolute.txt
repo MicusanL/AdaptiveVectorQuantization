@@ -37,4 +37,6 @@ D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQua
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csproj.CoreCompileInputs.cache
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.exe
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.pdb
+D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\bin\Debug\BitReaderWriter.dll
+D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csproj.CopyComplete
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache

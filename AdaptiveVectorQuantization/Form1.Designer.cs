@@ -40,6 +40,8 @@
             this.checkBoxDrawBorder = new System.Windows.Forms.CheckBox();
             this.labelDictionarySize = new System.Windows.Forms.Label();
             this.textBoxDictionarySize = new System.Windows.Forms.TextBox();
+            this.buttonShannon = new System.Windows.Forms.Button();
+            this.checkBoxCompressedFileFormat = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // panelOriginalImage
@@ -131,11 +133,33 @@
             this.textBoxDictionarySize.TabIndex = 7;
             this.textBoxDictionarySize.Text = "1000";
             // 
+            // buttonShannon
+            // 
+            this.buttonShannon.Location = new System.Drawing.Point(309, 560);
+            this.buttonShannon.Name = "buttonShannon";
+            this.buttonShannon.Size = new System.Drawing.Size(127, 44);
+            this.buttonShannon.TabIndex = 9;
+            this.buttonShannon.Text = "Shannon";
+            this.buttonShannon.UseVisualStyleBackColor = true;
+            this.buttonShannon.Click += new System.EventHandler(this.buttonShannon_Click);
+            // 
+            // checkBoxCompressedFileFormat
+            // 
+            this.checkBoxCompressedFileFormat.AutoSize = true;
+            this.checkBoxCompressedFileFormat.Location = new System.Drawing.Point(397, 481);
+            this.checkBoxCompressedFileFormat.Name = "checkBoxCompressedFileFormat";
+            this.checkBoxCompressedFileFormat.Size = new System.Drawing.Size(175, 21);
+            this.checkBoxCompressedFileFormat.TabIndex = 10;
+            this.checkBoxCompressedFileFormat.Text = "CompressedFileFormat";
+            this.checkBoxCompressedFileFormat.UseVisualStyleBackColor = true;
+            // 
             // FormAVQ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1249, 669);
+            this.Controls.Add(this.checkBoxCompressedFileFormat);
+            this.Controls.Add(this.buttonShannon);
             this.Controls.Add(this.labelDictionarySize);
             this.Controls.Add(this.textBoxDictionarySize);
             this.Controls.Add(this.checkBoxDrawBorder);
@@ -165,6 +189,8 @@
         private System.Windows.Forms.CheckBox checkBoxDrawBorder;
         private System.Windows.Forms.Label labelDictionarySize;
         private System.Windows.Forms.TextBox textBoxDictionarySize;
+        private System.Windows.Forms.Button buttonShannon;
+        private System.Windows.Forms.CheckBox checkBoxCompressedFileFormat;
     }
 }
 

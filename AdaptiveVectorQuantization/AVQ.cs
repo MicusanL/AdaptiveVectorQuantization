@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitReaderWriter;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -15,7 +16,8 @@ namespace AdaptiveVectorQuantization
         public static FastImage workImage;
         public static bool[,] imageBitmap;
 
-    
+
+        private readonly BinaryWriter binaryWriter;
 
         public static int CompareBlocks(Block b1, Block b2)
         {
@@ -72,9 +74,10 @@ namespace AdaptiveVectorQuantization
         private Dictionary<Block, int> dictionary;
         private int currentDictionaryLength; /* currentDictionaryLength = [256; maxDictionaryLength] */
         private int numberBlocksFinded = 0;
+        private int numberErrorPX = 0;
 
         public static int Threshold { get; set; }
-        public int MaxDictionaryLength { get; set; }
+        public static int MaxDictionaryLength { get; set; }
 
         private int SearchBlock(Position position)
         {
@@ -206,32 +209,31 @@ namespace AdaptiveVectorQuantization
         addGP: poolGrowingPoints.Add(growingPoint);
         }
 
+        private Random random = new Random();
         private void DrawBlockBorder(int i, int j, Block block)
         {
+            int r = random.Next(0, 255);
+            int g = random.Next(0, 255);
+            int b = random.Next(0, 255);
+
             for (int k = 0; k < block.Width; k++)
             {
-                workImage.SetPixel(i + k, j, 255);
-                workImage.SetPixel(i + k, j + block.Height - 1, 255);
+                workImage.SetPixel(i + k, j, r, g, b);
+                workImage.SetPixel(i + k, j + block.Height - 1, r, g, b);
             }
             for (int l = 0; l < block.Height; l++)
             {
-                workImage.SetPixel(i, j + l, 255);
-                workImage.SetPixel(i + block.Width - 1, j + l, 255);
+                workImage.SetPixel(i, j + l, r, g, b);
+                workImage.SetPixel(i + block.Width - 1, j + l, r, g, b);
             }
         }
 
-        private Position GetNextGrowingPoint()
+        private Position GetNextGrowingPoint() // done
         {
-            //int indexMax = !poolGrowingPoints.Any() ? -1 :
-            //        poolGrowingPoints.Select((value, index) => new { Value = value, Index = index })
-            //                        .Aggregate((a, b) => (a.Value.X + a.Value.Y < b.Value.X + b.Value.Y) ? a : b)
-            //                        .Index;
-
-            //poolGrowingPoints.OrderBy(gp => (gp.X + gp.Y));
 
             int minSum = int.MaxValue, index = 0;
 
-            for(int i = 0; i < poolGrowingPoints.Count; i++)
+            for (int i = 0; i < poolGrowingPoints.Count; i++)
             {
                 if (poolGrowingPoints[i].X + poolGrowingPoints[i].Y < minSum)
                 {
@@ -239,7 +241,7 @@ namespace AdaptiveVectorQuantization
                     index = i;
                 }
             }
-           
+
 
             Position growingPoint = poolGrowingPoints[index];
             poolGrowingPoints.RemoveAt(index);
@@ -248,17 +250,57 @@ namespace AdaptiveVectorQuantization
 
 
 
-        private static void WriteInFile(List<int> indexes)
+        private static void WriteInFile(List<int> indexes, bool CompressedFileFormat)
         {
             //using (BinaryWriter writer = new BinaryWriter(File.Open("exitFile", FileMode.Create)))
             //{
             //    writer.Write(index);
             //}
 
-            using (FileStream fs = new FileStream("exitFile", FileMode.Create))
+
+
+            string[] fileNameParts = FormAVQ.InputFile.Split('.');
+            string filenamesuffix = "_T" + Threshold + "_D" + MaxDictionaryLength;
+            string outputFile = fileNameParts[0] + filenamesuffix + ".AVQ";
+
+            if (CompressedFileFormat)
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(fs, indexes);
+                outputFile += "Comp";
+                using (BitWriter writer = new BitWriter(outputFile))
+                {
+                    writer.WriteNBits((uint)indexes.Count, 32);
+                    foreach (uint index in indexes)
+                    {
+                        if (index < 256)
+                        {
+                            writer.WriteNBits(0, 2);
+                            writer.WriteNBits(index, 8);
+                        }
+                        else if (index < 65536)
+                        {
+                            writer.WriteNBits(1, 2);
+                            writer.WriteNBits(index, 16);
+                        }
+                        else if (index < 16777216)
+                        {
+                            writer.WriteNBits(2, 2);
+                            writer.WriteNBits(index, 24);
+                        }
+                        else
+                        {
+                            writer.WriteNBits(3, 2);
+                            writer.WriteNBits(index, 32);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                using (FileStream fs = new FileStream(outputFile, FileMode.Create))
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    bf.Serialize(fs, indexes);
+                }
             }
         }
 
@@ -287,7 +329,7 @@ namespace AdaptiveVectorQuantization
                     TryAddBlockToDictionary(newBlock);
                 }
 
-                 
+
                 newBlock = new Block(new Position(currentPosition.X, currentPosition.Y - 1), 1, 2);
                 if (dictionary.ContainsKey(newBlock) == false)
                 {
@@ -299,7 +341,7 @@ namespace AdaptiveVectorQuantization
                 {
                     TryAddBlockToDictionary(newBlock);
                 }
-                
+
             }
             else
             {
@@ -331,8 +373,9 @@ namespace AdaptiveVectorQuantization
             }
         }
 
-        public FastImage StartCompression(int th, int dictionarySize, bool drawBorder)
+        public FastImage StartCompression(int th, int dictionarySize, bool drawBorder, bool CompressedFileFormat)
         {
+            DateTime startTime = DateTime.Now;
             List<int> indexesList = new List<int>();
 
             Threshold = th;
@@ -360,7 +403,7 @@ namespace AdaptiveVectorQuantization
                 }
 
                 indexesList.Add(index);
-                //WriteInFile(index);
+
 
                 if (index < 256)
                 {
@@ -381,11 +424,20 @@ namespace AdaptiveVectorQuantization
                         {
 
                             int color = workImage.GetPixel(findedBlock.Position.X + k, findedBlock.Position.Y + l);
+
+                            workImage.SetPixel(i + k, j + l, color);
                             if (imageBitmap[findedBlock.Position.X + k, findedBlock.Position.Y + l] == false)
                             {
-
+                                if (imageBitmap[i + k - 1, j + l] == true)
+                                {
+                                    workImage.SetPixel(i + k, j + l, workImage.GetPixel(i + k - 1, j + l));
+                                }
+                                else if (imageBitmap[i + k, j + l - 1] == true)
+                                {
+                                    workImage.SetPixel(i + k, j + l, workImage.GetPixel(i + k, j + l - 1));
+                                }
+                                numberErrorPX++;
                             }
-                            workImage.SetPixel(i + k, j + l, color);
                             imageBitmap[i + k, j + l] = true;
                             //Console.WriteLine("{0} {1}", i + k, j + l);
 
@@ -405,11 +457,14 @@ namespace AdaptiveVectorQuantization
 
             }
 
-            WriteInFile(indexesList);
-            Console.WriteLine("NumberBlocksFinded = {0}", numberBlocksFinded);
+            WriteInFile(indexesList, CompressedFileFormat);
+            Console.WriteLine("NumberBlocksFinded = {0} numberErrorPX = {1}", numberBlocksFinded, numberErrorPX);
 
             workImage.Unlock();
             originalImage.Unlock();
+
+            DateTime stopTime = DateTime.Now;
+            Console.WriteLine(stopTime - startTime);
             return workImage;
 
         }

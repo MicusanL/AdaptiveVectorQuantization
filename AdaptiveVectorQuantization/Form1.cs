@@ -14,21 +14,21 @@ namespace AdaptiveVectorQuantization
             InitializeComponent();
         }
 
-        public string SSourceFileName { get; set; }
+        public static string InputFile { get; set; }
         internal AVQ AvqCompression { get; set; } = null;
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
             openFileDialog.ShowDialog();
-            SSourceFileName = openFileDialog.FileName;
+            InputFile = openFileDialog.FileName;
 
             try
             {
-                panelOriginalImage.BackgroundImage = new Bitmap(SSourceFileName);
+                panelOriginalImage.BackgroundImage = new Bitmap(InputFile);
             }
             catch (Exception)
             {
-                Console.WriteLine("File {0} not found", SSourceFileName);
+                Console.WriteLine("File {0} not found", InputFile);
             }
             
             
@@ -39,16 +39,17 @@ namespace AdaptiveVectorQuantization
             buttonStart.Enabled = false;
             buttonLoad.Enabled = false;
 
-            if (SSourceFileName != null)
+            if (InputFile != null)
             {
-                AvqCompression = new AVQ(SSourceFileName);
+                AvqCompression = new AVQ(InputFile);
                 bool drawBorder = checkBoxDrawBorder.Checked;
+                bool CompressedFileFormat = checkBoxCompressedFileFormat.Checked;
                 int.TryParse(textBoxThreshold.Text, out int threshold);
                 int.TryParse(textBoxDictionarySize.Text, out int dictionarySize);
                
              
 
-                originalImage = AvqCompression.StartCompression(threshold, dictionarySize, drawBorder);
+                originalImage = AvqCompression.StartCompression(threshold, dictionarySize, drawBorder, CompressedFileFormat);
                 panelDestination.BackgroundImage = null;
                 panelDestination.BackgroundImage = originalImage.GetBitMap();
             }
@@ -60,6 +61,11 @@ namespace AdaptiveVectorQuantization
 
             buttonStart.Enabled = true;
             buttonLoad.Enabled = true;
+        }
+
+        private void buttonShannon_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(@"D:\Facultate\Licenta\Shannon.jar");
         }
     }
 }
