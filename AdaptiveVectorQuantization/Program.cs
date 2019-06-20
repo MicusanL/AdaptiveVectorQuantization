@@ -8,6 +8,7 @@ namespace AdaptiveVectorQuantization
 {
     static class Program
     {
+       public static FormAVQ form;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -16,7 +17,9 @@ namespace AdaptiveVectorQuantization
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormAVQ());
+            // Form form = new FormAVQ();
+            form = new FormAVQ();
+            Application.Run(form);
         }
     }
 }

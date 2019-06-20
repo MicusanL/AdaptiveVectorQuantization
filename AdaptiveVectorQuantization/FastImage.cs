@@ -53,6 +53,19 @@ namespace AdaptiveVectorQuantization
             return color;
         }
 
+        public void SetPixel(int col, int row, Color color)
+        {
+            unsafe
+            {
+                PixelData* pBase = (PixelData*)bitmapData.Scan0;
+                PixelData* pPixel = pBase + row * currentBitmapWidth + col;
+                pPixel->red = color.R;
+                pPixel->green = color.G;
+                pPixel->blue = color.B;
+
+            }
+        }
+
         public void SetPixel(int col, int row, int r, int g, int b)
         {
             unsafe

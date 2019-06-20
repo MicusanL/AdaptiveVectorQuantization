@@ -43,6 +43,7 @@
             this.buttonShannon = new System.Windows.Forms.Button();
             this.checkBoxCompressedFileFormat = new System.Windows.Forms.CheckBox();
             this.buttonDecode = new System.Windows.Forms.Button();
+            this.panelBlockPaint = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // panelOriginalImage
@@ -164,11 +165,20 @@
             this.buttonDecode.UseVisualStyleBackColor = true;
             this.buttonDecode.Click += new System.EventHandler(this.buttonDecode_Click);
             // 
+            // panelBlockPaint
+            // 
+            this.panelBlockPaint.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.panelBlockPaint.Location = new System.Drawing.Point(1059, 12);
+            this.panelBlockPaint.Name = "panelBlockPaint";
+            this.panelBlockPaint.Size = new System.Drawing.Size(472, 408);
+            this.panelBlockPaint.TabIndex = 12;
+            // 
             // FormAVQ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1249, 669);
+            this.ClientSize = new System.Drawing.Size(1580, 669);
+            this.Controls.Add(this.panelBlockPaint);
             this.Controls.Add(this.buttonDecode);
             this.Controls.Add(this.checkBoxCompressedFileFormat);
             this.Controls.Add(this.buttonShannon);
@@ -204,6 +214,7 @@
         private System.Windows.Forms.Button buttonShannon;
         private System.Windows.Forms.CheckBox checkBoxCompressedFileFormat;
         private System.Windows.Forms.Button buttonDecode;
+        private System.Windows.Forms.Panel panelBlockPaint;
     }
 }
 

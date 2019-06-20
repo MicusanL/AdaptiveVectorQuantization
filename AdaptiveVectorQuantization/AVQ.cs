@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace AdaptiveVectorQuantization
 {
@@ -15,6 +17,7 @@ namespace AdaptiveVectorQuantization
 
         private const int emptyPixel = 30;
         public static bool[,] imageBitmap;
+        public static FastImage bitmapBlocks;
         public static int imageWidth, imageHeight;
 
         private static bool dictionaryChanged = false;
@@ -40,10 +43,14 @@ namespace AdaptiveVectorQuantization
 
             imageBitmap = new bool[originalImage.Width, originalImage.Height];
 
-            Bitmap blackImageBitmap = new Bitmap(sSourceFileName);
-            workImage = newBlackImage(blackImageBitmap);
+            Bitmap blackImageBitmap = new Bitmap(originalImage.Width, originalImage.Height, PixelFormat.Format24bppRgb);
+            Bitmap blackImageBitmap2 = new Bitmap(originalImage.Width,originalImage.Height, PixelFormat.Format24bppRgb);
+        
+            //workImage = newBlackImage(blackImageBitmap);
+            workImage = new FastImage(blackImageBitmap);
+            //bitmapBlocks = newBlackImage(blackImageBitmap2);
+            bitmapBlocks = newBlackImage(blackImageBitmap2);
 
-            dictionary = new Dictionary<Block, int>();
             dictionaryBackup = new List<Block>();
             currentDictionaryLength = 256;
 
@@ -58,7 +65,7 @@ namespace AdaptiveVectorQuantization
             Position firstGrowingPoint = new Position(0, 0);
             poolGrowingPoints.Add(firstGrowingPoint);
 
-            dictionary = new Dictionary<Block, int>();
+
             dictionaryBackup = new List<Block>();
             currentDictionaryLength = 256;
         }
@@ -197,7 +204,7 @@ namespace AdaptiveVectorQuantization
                 }
             }
 
-            return differences;
+            return differences / (b1.Size);
 
         }
 
@@ -471,6 +478,7 @@ namespace AdaptiveVectorQuantization
 
         private void ReplaceBlock(Block findedBlock, int i, int j)
         {
+            Color randomColor = Color.FromArgb(random.Next(256), random.Next(256), random.Next(256));
             for (int k = 0; k < findedBlock.Width; k++)
             {
                 for (int l = 0; l < findedBlock.Height; l++)
@@ -487,6 +495,8 @@ namespace AdaptiveVectorQuantization
                             numberErrorPX++;
                         }
 
+                        
+                        bitmapBlocks.SetPixel(i + k, j + l, randomColor);
                         workImage.SetPixel(i + k, j + l, color);
                         imageBitmap[i + k, j + l] = true;
                     }
@@ -498,6 +508,8 @@ namespace AdaptiveVectorQuantization
         public FastImage StartDeCompression(string inputFile)
         {
             ReadFromFile(inputFile);
+            dictionary = new Dictionary<Block, int>(MaxDictionaryLength);
+
             Bitmap blackImageBitmap = new Bitmap(imageWidth, imageHeight);//!!!!
 
             workImage = newBlackImage(blackImageBitmap);
@@ -546,8 +558,8 @@ namespace AdaptiveVectorQuantization
 
                 }
 
-                TryAddGrowingPoint(new Position(i, j + heightStep));
-                TryAddGrowingPoint(new Position(i + widthStep, j));
+                TryAddGrowingPoint(new Position(i, j + widthStep));
+                TryAddGrowingPoint(new Position(i + heightStep, j));
 
                 if (i != 0 && j != 0)
                 {
@@ -570,12 +582,21 @@ namespace AdaptiveVectorQuantization
             indexesList = new List<int>();
             Threshold = th;
             MaxDictionaryLength = dictionarySize;
+            dictionary = new Dictionary<Block, int>(MaxDictionaryLength);
 
             originalImage.Lock();
             workImage.Lock();
-
+            int ct = 0;
             while (poolGrowingPoints.Count != 0)
             {
+                ct++;
+                if (ct == 700)
+                {
+                    ct = 0;
+                    Program.form.updatePanelBlock(bitmapBlocks.GetBitMap());
+                    Thread.Sleep(50);
+                }
+
                 int widthStep, heightStep;
                 Position growingPoint = GetNextGrowingPoint();
                 int i = growingPoint.X;

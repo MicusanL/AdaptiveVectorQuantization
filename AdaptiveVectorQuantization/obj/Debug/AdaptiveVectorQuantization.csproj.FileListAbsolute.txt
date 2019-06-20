@@ -40,7 +40,6 @@ D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQua
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\bin\Debug\BitReaderWriter.dll
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csproj.CopyComplete
 D:\Facultate\Licenta\AVQ2\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache
-D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache
 D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.FormAVQ.resources
 D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.Properties.Resources.resources
 D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csproj.GenerateResource.cache
@@ -52,3 +51,4 @@ D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\bin\Debug\AdaptiveVectorQua
 D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\bin\Debug\AdaptiveVectorQuantization.pdb
 D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\bin\Debug\BitReaderWriter.dll
 D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csproj.CopyComplete
+D:\Facultate\Licenta\AVQ4\AdaptiveVectorQuantization\obj\Debug\AdaptiveVectorQuantization.csprojAssemblyReference.cache

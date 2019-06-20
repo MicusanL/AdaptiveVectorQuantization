@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace AdaptiveVectorQuantization
@@ -14,13 +13,29 @@ namespace AdaptiveVectorQuantization
         {
             InitializeComponent();
         }
-
+          
         public static string InputFile { get; set; }
         public static string InputFileComp { get; set; }
         internal AVQ AvqCompression { get; set; } = null;
 
+        private void invertFormAcces()
+        {
+            buttonStart.Enabled = !buttonStart.Enabled;
+            buttonLoad.Enabled = !buttonLoad.Enabled;
+            buttonDecode.Enabled = !buttonDecode.Enabled;
+            buttonShannon.Enabled = !buttonShannon.Enabled;
+        }
+
+        public void updatePanelBlock(Bitmap image)
+        {
+            panelBlockPaint.BackgroundImage = image;
+            //panelBlockPaint.Update();
+            panelBlockPaint.Refresh();
+        }
+
         private void buttonLoad_Click(object sender, EventArgs e)
         {
+
             openFileDialog.Filter = "Image Files(*.BMP;*.JPG)|*.BMP;*.JPG|All files (*.*)|*.*";
             openFileDialog.ShowDialog();
             InputFile = openFileDialog.FileName;
@@ -39,17 +54,19 @@ namespace AdaptiveVectorQuantization
         private void buttonStart_Click(object sender, EventArgs e)
         {
             invertFormAcces();
+            panelDestination.BackgroundImage = null;
 
             if (InputFile != null)
             {
-                AvqCompression = new AVQ(InputFile);
+                
                 bool drawBorder = checkBoxDrawBorder.Checked;
                 bool CompressedFileFormat = checkBoxCompressedFileFormat.Checked;
                 int.TryParse(textBoxThreshold.Text, out int threshold);
                 int.TryParse(textBoxDictionarySize.Text, out int dictionarySize);
 
+                AvqCompression = new AVQ(InputFile);
                 originalImage = AvqCompression.StartCompression(threshold, dictionarySize, drawBorder, CompressedFileFormat);
-                panelDestination.BackgroundImage = null;
+                
 
                 panelDestination.BackgroundImage = originalImage.GetBitMap();
             }
@@ -66,14 +83,7 @@ namespace AdaptiveVectorQuantization
         {
             System.Diagnostics.Process.Start(@"D:\Facultate\Licenta\Shannon.jar");
         }
-        private void invertFormAcces()
-        {
-            buttonStart.Enabled = !buttonStart.Enabled;
-            buttonLoad.Enabled = !buttonLoad.Enabled;
-            buttonDecode.Enabled = !buttonDecode.Enabled;
-            buttonShannon.Enabled = !buttonShannon.Enabled;
-        }
-
+        
         private void buttonDecode_Click(object sender, EventArgs e)
         {
 
