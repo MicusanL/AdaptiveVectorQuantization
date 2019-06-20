@@ -20,6 +20,7 @@ namespace AdaptiveVectorQuantization
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
+
             openFileDialog.ShowDialog();
             InputFile = openFileDialog.FileName;
 
@@ -31,8 +32,8 @@ namespace AdaptiveVectorQuantization
             {
                 Console.WriteLine("File {0} not found", InputFile);
             }
-            
-            
+
+
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -46,8 +47,8 @@ namespace AdaptiveVectorQuantization
                 bool CompressedFileFormat = checkBoxCompressedFileFormat.Checked;
                 int.TryParse(textBoxThreshold.Text, out int threshold);
                 int.TryParse(textBoxDictionarySize.Text, out int dictionarySize);
-               
-             
+
+
 
                 originalImage = AvqCompression.StartCompression(threshold, dictionarySize, drawBorder, CompressedFileFormat);
                 panelDestination.BackgroundImage = null;
@@ -88,8 +89,8 @@ namespace AdaptiveVectorQuantization
 
             if (InputFileComp != null)
             {
-                AvqCompression = new AVQ(InputFileComp,false);
-                
+                AvqCompression = new AVQ();
+
                 //bool drawBorder = checkBoxDrawBorder.Checked;
                 //bool CompressedFileFormat = checkBoxCompressedFileFormat.Checked;
                 //int.TryParse(textBoxThreshold.Text, out int threshold);
@@ -97,9 +98,10 @@ namespace AdaptiveVectorQuantization
 
 
 
-                originalImage = AvqCompression.StartDeCompression();
+                originalImage = AvqCompression.StartDeCompression(InputFileComp);
                 Bitmap bitmap = originalImage.GetBitMap();
-                bitmap.Save("Te222st.bmp");
+                string[] output = InputFileComp.Split('.');
+                bitmap.Save(output[0] + "-decoded.bmp");
                 //panelDestination.BackgroundImage = null;
                 //panelDestination.BackgroundImage = originalImage.GetBitMap();
 
