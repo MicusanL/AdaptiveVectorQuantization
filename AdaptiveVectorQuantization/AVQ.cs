@@ -90,11 +90,21 @@ namespace AdaptiveVectorQuantization
         {
             string[] fileNameParts = FormAVQ.InputFile.Split('.');
             string filenamesuffix = "_T" + Threshold + "_D" + MaxDictionaryLength;
-            string outputFile = fileNameParts[0] + filenamesuffix + ".AVQ";
+
+            string filenameNoExtension = Path.GetFileNameWithoutExtension(FormAVQ.InputFile);
+            string folderPath = Path.GetDirectoryName(FormAVQ.InputFile);
+
+            string folder = Path.Combine(folderPath, filenameNoExtension);
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string outputFile = Path.Combine(folder, filenameNoExtension + "_T" + Threshold + "_D" + MaxDictionaryLength + ".AVQ");
 
             if (CompressedFileFormat)
             {
                 outputFile += "Comp";
+
                 using (BitWriter writer = new BitWriter(outputFile))
                 {
                     writer.WriteNBits((uint)indexes.Count, 32);
@@ -102,6 +112,7 @@ namespace AdaptiveVectorQuantization
                     writer.WriteNBits((uint)MaxDictionaryLength, 32);
                     writer.WriteNBits((uint)originalImage.Width, 32);
                     writer.WriteNBits((uint)originalImage.Height, 32);
+
                     foreach (uint index in indexes)
                     {
                         if (index < 256)
@@ -150,7 +161,7 @@ namespace AdaptiveVectorQuantization
         public static int CompareBlocks(Block b1, Block b2)
         {
             int differences = 0;
-            
+
             for (int i = 0; i < b1.Width; i++)
             {
                 for (int j = 0; j < b1.Height; j++)
@@ -317,13 +328,17 @@ namespace AdaptiveVectorQuantization
                 try
                 {
                     block.Index = currentDictionaryLength;
+                    if (block.Index == 452)
+                    {
+
+                    }
 
                     dictionary.Add(block, currentDictionaryLength++);
                     dictionaryChanged = true;
                 }
                 catch (ArgumentException)
                 {
-
+                    dictionaryBackup.Add(block);
                 }
             }
             else
@@ -377,7 +392,7 @@ namespace AdaptiveVectorQuantization
                     index = i;
                 }
             }
-            
+
             Position growingPoint = poolGrowingPoints[index];
             poolGrowingPoints.RemoveAt(index);
 
@@ -414,7 +429,6 @@ namespace AdaptiveVectorQuantization
                             findedBlock = block;
                         }
                     }
-
                 }
 
                 Block newBlock = new Block(new Position(currentPosition.X, currentPosition.Y - 1), findedBlock.Width, findedBlock.Height + 1);
@@ -510,13 +524,26 @@ namespace AdaptiveVectorQuantization
                 {
 
                     Block findedBlock = dictionary.LastOrDefault(x => x.Value == index).Key;
+
+                    if (findedBlock == null)
+                    {
+                        Console.WriteLine("**");
+                        foreach (Block block in dictionaryBackup)
+                        {
+                            if (block.Index == index)
+                            {
+                                findedBlock = block;
+                            }
+                        }
+                    }
+
                     ReplaceBlock(findedBlock, i, j);
 
                     widthStep = findedBlock.Width;
                     heightStep = findedBlock.Height;
 
                     numberBlocksFinded++;
-                    
+
                 }
 
                 TryAddGrowingPoint(new Position(i, j + heightStep));
@@ -527,11 +554,11 @@ namespace AdaptiveVectorQuantization
                     UpdateDictionary(growingPoint, index);
                 }
             }
-            
+
             Console.WriteLine("NumberBlocksFinded = {0} numberErrorPX = {1}", numberBlocksFinded, numberErrorPX);
 
             workImage.Unlock();
-            
+
             return workImage;
 
         }

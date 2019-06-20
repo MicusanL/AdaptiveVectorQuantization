@@ -12,7 +12,6 @@ namespace AdaptiveVectorQuantization
         private Rectangle rectangle;
         private BitmapData bitmapData = null;
         private int color;
-        private Point size;
         private int currentBitmapWidth = 0;
 
         struct PixelData

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace AdaptiveVectorQuantization
@@ -33,7 +34,6 @@ namespace AdaptiveVectorQuantization
                 Console.WriteLine("File {0} not found", InputFile);
             }
 
-
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -48,14 +48,8 @@ namespace AdaptiveVectorQuantization
                 int.TryParse(textBoxThreshold.Text, out int threshold);
                 int.TryParse(textBoxDictionarySize.Text, out int dictionarySize);
 
-
-
                 originalImage = AvqCompression.StartCompression(threshold, dictionarySize, drawBorder, CompressedFileFormat);
                 panelDestination.BackgroundImage = null;
-
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //Bitmap bitmap = originalImage.GetBitMap();
-                //bitmap.Save("Test.bmp");
 
                 panelDestination.BackgroundImage = originalImage.GetBitMap();
             }
@@ -92,21 +86,11 @@ namespace AdaptiveVectorQuantization
             {
                 AvqCompression = new AVQ();
 
-                //bool drawBorder = checkBoxDrawBorder.Checked;
-                //bool CompressedFileFormat = checkBoxCompressedFileFormat.Checked;
-                //int.TryParse(textBoxThreshold.Text, out int threshold);
-                //int.TryParse(textBoxDictionarySize.Text, out int dictionarySize);
-
-
-
                 originalImage = AvqCompression.StartDeCompression(InputFileComp);
                 Bitmap bitmap = originalImage.GetBitMap();
+
                 string[] output = InputFileComp.Split('.');
                 bitmap.Save(output[0] + "-decoded.bmp");
-                //panelDestination.BackgroundImage = null;
-                //panelDestination.BackgroundImage = originalImage.GetBitMap();
-
-
             }
             else
             {

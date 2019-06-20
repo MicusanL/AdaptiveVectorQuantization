@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdaptiveVectorQuantization
+﻿namespace AdaptiveVectorQuantization
 {
 
     internal class Block
@@ -18,8 +11,10 @@ namespace AdaptiveVectorQuantization
 
         public Block setupNewBlockForDictionary(Position currentBlockPosition)
         {
-            Block newBlock = new Block(this);
-            newBlock.Position = currentBlockPosition;
+            Block newBlock = new Block(this)
+            {
+                Position = currentBlockPosition
+            };
 
             if (Width < Height)
             {
@@ -60,18 +55,18 @@ namespace AdaptiveVectorQuantization
         public override string ToString()
         {
             //return base.ToString();
-            return "w: " + Width + " h: " + Height + " s: " + Size + " x: " + Position.X + " y: " + Position.Y;
+            return "I: " + Index + " w: " + Width + " h: " + Height + " s: " + Size + " x: " + Position.X + " y: " + Position.Y;
         }
         public override bool Equals(object obj)
         {
-            var block = obj as Block;
+            Block block = obj as Block;
             //block.height = height;
             //block.width = width;
             if (block.Position.X + Width >= AVQ.workImage.Width || block.Position.Y + Height >= AVQ.workImage.Height)
             {
                 return false;
             }
-            
+
 
             int blocksDiffedences = AVQ.CompareBlocks(this, block);
 
@@ -110,9 +105,9 @@ namespace AdaptiveVectorQuantization
             {
                 return true;
             }
-          
 
-            label: return false;
+
+        label: return false;
         }
 
 
