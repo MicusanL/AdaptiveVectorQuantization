@@ -20,7 +20,7 @@ namespace AdaptiveVectorQuantization
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
-
+            openFileDialog.Filter = "Image Files(*.BMP;*.JPG)|*.BMP;*.JPG|All files (*.*)|*.*";
             openFileDialog.ShowDialog();
             InputFile = openFileDialog.FileName;
 
@@ -84,6 +84,7 @@ namespace AdaptiveVectorQuantization
         {
 
             invertFormAcces();
+            openFileDialog.Filter = "AVQ Files(*.AVQ)|*.AVQ|All files (*.*)|*.*";
             openFileDialog.ShowDialog();
             InputFileComp = openFileDialog.FileName;
 
