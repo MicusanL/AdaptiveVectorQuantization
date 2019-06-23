@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AdaptiveVectorQuantization.AVQ">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UEAAAIAmAEAAEAAQgAAhoAAFAAEAAAAAAAQgCgGEAIA=</HashCode>
+      <FileName>AVQ.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AdaptiveVectorQuantization.Block">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAgAAkgAAAAEAAAAAAAIAAAAEAAAAAAAA=</HashCode>
+      <FileName>Block.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AdaptiveVectorQuantization.BuildedImage">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAEAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BuildedImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AdaptiveVectorQuantization.FastImage">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="AdaptiveVectorQuantization.FastImage.PixelData" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>FastImage.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gAARABAABAAACAAAAIAAAGgIEAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>FastImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AdaptiveVectorQuantization.Position">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Position.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
